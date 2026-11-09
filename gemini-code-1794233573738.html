@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personality Cooker 3000</title>
+    <style>
+        :root {
+            --bg-deep: #07050f;
+            --panel-bg: rgba(22, 12, 38, 0.95);
+            --neon-orange: #ff7700;
+            --neon-cyan: #00f0ff;
+            --neon-pink: #ff007f;
+            --neon-gold: #ffd700;
+            --text-main: #f0e6fc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(255, 119, 0, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(0, 240, 255, 0.12) 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--panel-bg);
+            border: 3px solid var(--neon-orange);
+            border-radius: 24px;
+            box-shadow: 0 0 35px rgba(255, 119, 0, 0.3);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(255, 119, 0, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .app-title {
+            font-size: 1.1rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--neon-orange), var(--neon-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .tab-btn {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid var(--neon-orange);
+            color: var(--text-main);
+            padding: 5px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--neon-orange);
+            color: #000;
+            box-shadow: 0 0 10px var(--neon-orange);
+        }
+
+        .section {
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .section.active {
+            display: flex;
+        }
+
+        .credits-box {
+            font-size: 0.78rem;
+            color: #d8c8f0;
+            background: rgba(0,0,0,0.4);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,119,0,0.3);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Cooker Chamber Graphic */
+        .cooker-viewport {
+            height: 110px;
+            background: #11081f;
+            border: 2px dashed rgba(255,119,0,0.4);
+            border-radius: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flame-anim {
+            font-size: 2.2rem;
+            animation: pulseFlame 1s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseFlame {
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px var(--neon-orange)); }
+            100% { transform: scale(1.15); filter: drop-shadow(0 0 15px var(--neon-pink)); }
+        }
+
+        /* Input Cards */
+        .input-card {
+            background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(255,119,0,0.2);
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+        }
+
+        .text-input {
+            width: 100%;
+            background: rgba(10, 5, 20, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 9px 12px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .text-input:focus {
+            border-color: var(--neon-orange);
+            box-shadow: 0 0 8px rgba(255, 119, 0, 0.3);
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, var(--neon-orange), var(--neon-pink));
+            color: #fff;
+            font-weight: 900;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 119, 0, 0.4);
+            letter-spacing: 0.5px;
+            transition: transform 0.1s;
+        }
+
+        .action-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Results Card */
+        .result-card {
+            background: rgba(25, 12, 40, 0.98);
+            border: 2px solid var(--neon-gold);
+            border-radius: 14px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
+            display: none;
+        }
+
+        .result-title {
+            font-size: 1.2rem;
+            color: var(--neon-gold);
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .result-desc {
+            font-size: 0.85rem;
+            line-height: 1.45;
+            color: #e8def8;
+        }
+
+        /* QR / Links */
+        .qr-card {
+            background: rgba(255,255,255,0.95);
+            padding: 15px;
+            border-radius: 12px;
+            color: #000;
+            text-align: center;
+        }
+
+        .link-box {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--neon-cyan);
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--neon-cyan);
+            word-break: break-all;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header & Tabs -->
+        <div class="app-header">
+            <div class="app-title">🔥 COOKER 3000</div>
+            <div class="nav-buttons">
+                <button class="tab-btn active" onclick="switchTab('game', this)">Cooker</button>
+                <button class="tab-btn" onclick="switchTab('qr', this)">QR / Link</button>
+                <button class="tab-btn" onclick="switchTab('credits', this)">Credits</button>
+            </div>
+        </div>
+
+        <!-- 1. COOKER GAME SECTION -->
+        <div id="section-game" class="section active">
+            <div class="cooker-viewport">
+                <div class="flame-anim">🍳🔥⚡</div>
+            </div>
+
+            <div class="input-card">
+                <div class="input-label">1. Primary Energy / Vibe Value</div>
+                <input type="text" id="valEnergy" class="text-input" placeholder="e.g., Hyperactive, Chill, Chaotic...">
+            </div>
+
+            <div class="input-card">
+                <div class="input-label">2. Core Flavor / Personality Trait</div>
+                <input type="text" id="valFlavor" class="text-input" placeholder="e.g., Sarcastic, Sweet, Overthinker...">
+            </div>
+
+            <div class="input-card">
+                <div class="input-label">3. Secret Spice / Special Habit</div>
+                <input type="text" id="valHabit" class="text-input" placeholder="e.g., Gaming at 3 AM, Drinking iced coffee...">
+            </div>
+
+            <button class="action-btn" onclick="cookPersonality()">🔬 ANALYZE PERSONALITY</button>
+
+            <div class="result-card" id="resultCard">
+                <div class="result-title" id="resTitle">AI Analysis Complete</div>
+                <div class="result-desc" id="resDesc">Your unique recipe has been processed!</div>
+            </div>
+        </div>
+
+        <!-- 2. QR & LINK SECTION -->
+        <div id="section-qr" class="section">
+            <div class="link-box" id="urlDisplay">https://personality-cooker-3000.app</div>
+            <div class="qr-card">
+                <div style="font-size: 2rem;">📱</div>
+                <div style="font-weight: bold; font-size: 0.85rem; color: #111;">COMMITTEE PRESENTATION PORTAL</div>
+                <p style="font-size: 0.7rem; color: #555; margin-top: 4px;">Scan with phone camera to test live!</p>
+            </div>
+            <button class="tab-btn" onclick="copyLink()" style="padding: 10px; width: 100%; background: var(--neon-orange); color:#000; font-weight:bold;">Copy Game URL</button>
+        </div>
+
+        <!-- 3. CREDITS SECTION -->
+        <div id="section-credits" class="section">
+            <div class="credits-box">
+                <h3 style="color: var(--neon-cyan); margin-bottom: 8px; font-size: 0.95rem;">Development Team</h3>
+                <strong>Younis Mohamed</strong><br>
+                <strong>Selim Mohamed</strong><br>
+                <strong>Yehia Ahmed</strong><br>
+                <strong>Yassin Emad</strong><br>
+                <strong>Ali Mekky</strong><br>
+                <strong>Hamza Amr</strong>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName, btnElement) {
+            document.querySelectorAll('.section').forEach(s => s.classList.siteremove ? s.classList.remove('active') : s.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById('section-' + tabName).classList.add('active');
+            btnElement.classList.add('active');
+
+            if(tabName === 'qr') {
+                document.getElementById('urlDisplay').innerText = window.location.href;
+            }
+        }
+
+        function cookPersonality() {
+            const energy = document.getElementById('valEnergy').value.trim();
+            const flavor = document.getElementById('valFlavor').value.trim();
+            const habit = document.getElementById('valHabit').value.trim();
+
+            const card = document.getElementById('resultCard');
+            card.style.display = 'block';
+
+            if(!energy && !flavor && !habit) {
+                document.getElementById('resTitle').innerText = "⚠️ Empty Chamber!";
+                document.getElementById('resDesc').innerText = "Type at least one value or trait so the AI cooker can analyze your recipe!";
+                return;
+            }
+
+            // AI text detection simulation based on keywords entered
+            let title = "🧪 The Ultimate Custom Alchemist";
+            let desc = `The AI scanned your inputs ("${energy || 'Unspecified'} | ${flavor || 'Unspecified'} | ${habit || 'Unspecified'}") and detected a rare hybrid archetype! You possess an unpredictable mix of high strategic thinking and spontaneous creativity.`;
+
+            const combined = (energy + " " + flavor + " " + habit).toLowerCase();
+
+            if (combined.includes('game') || combined.includes('play') || combined.includes('fortnite')) {
+                title = "🎮 The Elite Gaming Tactician";
+                desc = "The AI detected heavy gaming frequencies in your data! You approach life like a high-stakes multiplayer lobby—always calculating your next clutch move.";
+            } else if (combined.includes('chill') || combined.includes('sleep') || combined.includes('calm')) {
+                title = "🌌 The Ultra-Zen Mastermind";
+                desc = "Zero panic detected by the cooker. You operate on a frequency of pure calmness, effortlessly handling chaos while remaining completely unbothered.";
+            } else if (combined.includes('coffee') || combined.includes('energy') || combined.includes('hyper')) {
+                title = "⚡ The Overclocked Speedrunner";
+                desc = "Maximum velocity detected! Your custom values indicate you run on pure momentum, high-speed focus, and relentless productivity.";
+            }
+
+            document.getElementById('resTitle').innerText = title;
+            document.getElementById('resDesc').innerText = desc;
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Game link copied to clipboard! Ready to share with your committee.");
+        }
+    </script>
+</body>
+</html>
